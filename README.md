@@ -34,9 +34,9 @@ Password: admin123
 ```
 
 ### 🌐 Access Points
-- **Admin Login:** http://localhost:8000/admin/login
-- **Admin Dashboard:** http://localhost:8000/admin
-- **Products:** http://localhost:8000/admin/products
+- **Admin Login:** http://127.0.0.1:8000/admin/login
+- **Admin Dashboard:** http://127.0.0.1:8000/admin/panel
+- **Products:** http://127.0.0.1:8000/product
 
 ---
 
