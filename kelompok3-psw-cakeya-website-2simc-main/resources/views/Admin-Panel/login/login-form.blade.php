@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CakeYa - Admin Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Jost:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        *,
+        button,
+        input,
+        select,
+        textarea {
+            font-family: 'Google Sans', 'Jost', 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .admin-scroll-up {
+            position: fixed;
+            left: 24px;
+            bottom: 24px;
+            z-index: 1100;
+            width: 48px;
+            height: 48px;
+            border: 0;
+            border-radius: 50%;
+            background-color: #a61e22;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease, background-color 0.2s ease;
+        }
+
+        .admin-scroll-up:hover,
+        .admin-scroll-up:focus {
+            background-color: #851619;
+            outline: none;
+        }
+
+        .admin-scroll-up.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .admin-scroll-up {
+                left: 18px;
+                bottom: 18px;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .login-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            border: solid 3px #0f172a;
+            padding: 35px 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo-area {
+            margin-bottom: 25px;
+        }
+
+        .logo-area img {
+            max-height: 75px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .login-card h2 {
+            margin: 0 0 20px 0;
+            color: #0f172a;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .error-alert {
+            display: none;
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #a61e22;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .success-alert {
+            display: none;
+            background-color: #dcfce7;
+            border: 1px solid #86efac;
+            color: #166534;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #0f172a;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease;
+            color: #0f172a;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #a61e22;
+        }
+
+        .form-control.is-invalid {
+            border-color: #fca5a5;
+            background-color: #fef2f2;
+        }
+
+        .password-input {
+            padding-right: 42px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1.1rem;
+            user-select: none;
+            transition: color 0.2s ease;
+        }
+
+        .toggle-password:hover {
+            color: #a61e22;
+        }
+
+        .btn-login {
+            width: 100%;
+            background-color: #a61e22;
+            color: #ffffff;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-login:hover {
+            background-color: #851619;
+        }
+
+        .btn-login:active {
+            transform: scale(0.99);
+        }
+
+        .footer-text {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-top: 25px;
+        }
+
+        .error-text {
+            color: #a61e22;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <button type="button" id="adminScrollUp" class="admin-scroll-up" aria-label="Scroll to first section">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <!-- Branding Area -->
+            <div class="logo-area">
+                <img src="/image/CakeYa-logo.PNG" alt="CakeYa Logo">
+            </div>
+            
+            <h2>Admin Portal Login</h2>
+
+            <!-- Success Alert -->
+            @if ($message = Session::get('success'))
+            <div class="success-alert" style="display: block;">
+                <i class="fas fa-check-circle"></i> {{ $message }}
+            </div>
+            @endif
+
+            <!-- Error Alert -->
+            @if ($errors->any())
+            <div class="error-alert" style="display: block;">
+                <i class="fas fa-exclamation-circle"></i> 
+                <span>{{ $errors->first() }}</span>
+            </div>
+            @endif
+
+            @if ($message = Session::get('error'))
+            <div class="error-alert" style="display: block;">
+                <i class="fas fa-exclamation-circle"></i> 
+                <span>{{ $message }}</span>
+            </div>
+            @endif
+
+            <!-- Login Form -->
+            <form id="loginForm" method="POST" action="{{ route('admin.login.submit') }}">
+                @csrf
+
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <input type="text" 
+                               id="username" 
+                               name="username" 
+                               class="form-control @error('username') is-invalid @enderror" 
+                               placeholder="Enter your username" 
+                               value="{{ old('username') }}"
+                               required 
+                               autocomplete="username">
+                    </div>
+                    @error('username')
+                        <span class="error-text">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               class="form-control password-input @error('password') is-invalid @enderror" 
+                               placeholder="Enter your password" 
+                               required 
+                               autocomplete="current-password">
+                        <i class="fas fa-eye toggle-password" id="passwordEye" onclick="togglePasswordVisibility()"></i>
+                    </div>
+                    @error('password')
+                        <span class="error-text">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Login Action Button -->
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+
+            <div class="footer-text">© 2026 CakeYa Bakery. All rights reserved.</div>
+        </div>
+    </div>
+
+<script>
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('passwordEye');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+
+function initAdminScrollUp() {
+    const button = document.getElementById('adminScrollUp');
+    if (!button) return;
+
+    const toggleButton = () => {
+        button.classList.toggle('is-visible', window.scrollY > 180);
+    };
+
+    button.addEventListener('click', () => {
+        const firstSection = document.querySelector('.login-wrapper') || document.body;
+        const top = firstSection === document.body
+            ? 0
+            : Math.max(firstSection.getBoundingClientRect().top + window.pageYOffset - 16, 0);
+
+        window.scrollTo({ top, behavior: 'smooth' });
+    });
+
+    toggleButton();
+    window.addEventListener('scroll', toggleButton, { passive: true });
+}
+
+document.addEventListener('DOMContentLoaded', initAdminScrollUp);
+</script>
+</body>
+</html>

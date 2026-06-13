@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel CakeYa - Users</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Jost:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        *,
+        button,
+        input,
+        select,
+        textarea {
+            font-family: 'Google Sans', 'Jost', 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .admin-scroll-up {
+            position: fixed;
+            left: 24px;
+            bottom: 24px;
+            z-index: 1100;
+            width: 48px;
+            height: 48px;
+            border: 0;
+            border-radius: 50%;
+            background-color: #a61e22;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(12px);
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease, background-color 0.2s ease;
+        }
+
+        .admin-scroll-up:hover,
+        .admin-scroll-up:focus {
+            background-color: #851619;
+            outline: none;
+        }
+
+        .admin-scroll-up.is-visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .admin-scroll-up {
+                left: 18px;
+                bottom: 18px;
+                width: 44px;
+                height: 44px;
+            }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #introduction {
+            border-radius: 12px;
+            border: solid 3px #0f172a; /* Dark border outline seen in the picture */
+            padding: 25px;   
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        #header {
+            padding: 10px 0 20px 0;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .view-switcher {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-toggle {
+            background-color: #e2e8f0;
+            color: #475569;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        /* Active styling matching the clean white look in screenshot */
+        .btn-toggle.active {
+            background-color: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            border: 1px solid #cbd5e1;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* USER TABLE STYLING */
+        .user-table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            text-align: left;
+        }
+
+        .user-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: lowercase; /* Matches "username", "password" header format */
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .user-table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+            vertical-align: middle;
+            font-size: 0.95rem;
+        }
+
+        .user-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* PASSWORD SYSTEM WITH EYE ICON */
+        .password-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-eye {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+
+        .btn-eye:hover {
+            color: #0f172a;
+        }
+
+        .table-management-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* BUTTON DESIGN SYSTEM */
+        .text-center { text-align: center; }
+        
+        .btn {
+            padding: 10px 18px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Darker Red/Crimson theme matching CakeYa Branding */
+        .btn-danger { 
+            background-color: #a61e22; 
+            color: #ffffff !important; 
+        }
+        .btn-danger:hover { 
+            background-color: #851619; 
+        }
+
+        /* Edit Button (Burgundy/Crimson Square) */
+        .btn-warning { 
+            background-color: #a61e22; 
+            color: #ffffff !important; 
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        .btn-warning:hover { 
+            background-color: #851619; 
+        }
+
+        /* Delete Button (Orange/Amber Square) */
+        .btn-delete {
+            background-color: #f59e0b;
+            color: #ffffff !important;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        .btn-delete:hover {
+            background-color: #d97706;
+        }
+
+        /* Add User Button styling */
+        .btn-success {
+            background-color: #a61e22;
+            color: white !important;
+            padding: 10px 20px;
+            font-weight: 500;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-success:hover { 
+            background-color: #851619; 
+        }
+
+        /* MODAL DIALOGS */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            align-items: center; justify-content: center;
+        }
+        
+        .modal-content-user {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            width: 450px;
+            max-width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0; 
+            padding-bottom: 14px; 
+            margin-bottom: 20px;
+            position: relative;
+            width: 100%;
+        }
+
+        .modal-header h2 { 
+            margin: 0; 
+            font-size: 1.4rem; 
+            font-weight: 600; 
+            text-align: center;
+            width: 100%; 
+        }
+
+        .close-modal { 
+            font-size: 1.6rem; 
+            font-weight: bold; 
+            color: #94a3b8; 
+            cursor: pointer; 
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 5;
+        }
+
+        .close-modal:hover { color: #0f172a; }
+        .form-group { margin-bottom: 18px; text-align: left; }
+        .form-control { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; box-sizing: border-box; }
+        .form-control:focus { outline: none; border-color: #a61e22; }
+        .form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
+        
+        .footer-text {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+    <button type="button" id="adminScrollUp" class="admin-scroll-up" aria-label="Scroll to first section">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="container">
+        <div id="introduction">
+            <div id="header">
+                <img src="/home-image/CakeYa-logo.PNG" alt="CakeYa Logo" style="max-height: 80px; width: auto; object-fit: contain;">
+                <a href="/admin/logout" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            
+            <div class="view-switcher">
+                <a href="/admin/panel" id="toggleProducts" class="btn-toggle">
+                    <i class="fas fa-birthday-cake"></i> Products
+                </a>
+                <div id="toggleUsers" class="btn-toggle active">
+                    <i class="fas fa-user"></i> Users
+                </div>
+            </div>
+
+            <div class="dashboard-actions">
+                <button id="dynamicAddBtn" class="btn btn-success" onclick="openAddModal()">
+                    <i class="fas fa-user-plus"></i> Add User
+                </button>
+            </div>
+            
+            <div id="mainContentContainer"></div>
+            <div class="footer-text">Admin Panel CakeYa - Users</div>
+        </div>
+    </div>
+
+    <div id="addUserModal" class="modal">
+        <div class="modal-content-user">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <span class="close-modal" onclick="closeModal('addUserModal')">&times;</span>
+            </div>
+            <form id="addUserForm" onsubmit="submitUserForm(event)">
+                <div class="form-group">
+                    <label for="username" style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: #333;">Username *</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email" style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: #333;">Email *</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: #333;">Password *</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editUserModal" class="modal">
+        <div class="modal-content-user">
+            <div class="modal-header">
+                <h2>Edit User</h2>
+                <span class="close-modal" onclick="closeModal('editUserModal')">&times;</span>
+            </div>
+            <form id="editUserForm" onsubmit="submitEditForm(event)">
+                <input type="hidden" id="edit_user_id" name="edit_user_id">
+                <div class="form-group">
+                    <label for="edit_username" style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: #333;">Username *</label>
+                    <input type="text" id="edit_username" name="edit_username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_email" style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: #333;">Email *</label>
+                    <input type="email" id="edit_email" name="edit_email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_password" style="display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; color: #333;">Password (Leave blank if unchanged)</label>
+                    <input type="password" id="edit_password" name="edit_password" class="form-control" placeholder="Enter new password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-warning">Update Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+let globalUsers = [];
+let unmaskedPasswords = {}; 
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadInitialData();
+});
+
+async function loadInitialData() {
+    await loadUsers();
+    renderUsers();
+}
+
+async function loadUsers() {
+    try {
+        const response = await fetch('/admin/api/user-list'); 
+        const data = await parseJsonResponse(response);
+        if (data.success) {
+            globalUsers = data.users;
+        }
+    } catch (e) { 
+        console.error("Error membaca data user:", e); 
+        // Fallback mockup data to inspect design easily if server isn't serving yet
+        globalUsers = [{ user_id: 1, username: 'Admin123', email: 'admin@cakeya.local', password: 'password123' }];
+    }
+}
+
+function renderUsers() {
+    const container = document.getElementById('mainContentContainer');
+    if(globalUsers.length === 0) {
+        container.innerHTML = `<div class="text-center" style="padding:40px; color:#888;">No users found.</div>`;
+        return;
+    }
+    
+    let tableHtml = `
+        <div class="user-table-container">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">No</th>
+                        <th>username</th>
+                        <th>email</th>
+                        <th>password</th>
+                        <th style="text-align: center; width: 120px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+                
+    globalUsers.forEach((user, index) => {
+        const isVisible = unmaskedPasswords[user.user_id] || false;
+        const hasDisplayPassword = Boolean(user.password);
+        const passwordDisplay = isVisible
+            ? escapeHtml(user.password || 'Reset password to display')
+            : (hasDisplayPassword ? "••••••" : "Not stored");
+        const eyeIcon = isVisible ? "fa-eye-slash" : "fa-eye";
+        const rowNumber = index + 1;
+
+        tableHtml += `
+            <tr>
+                <td>${rowNumber}</td>
+                <td>${escapeHtml(user.username)}</td>
+                <td>${escapeHtml(user.email || '-')}</td>
+                <td>
+                    <div class="password-wrapper">
+                        <span>${passwordDisplay}</span>
+                        <button type="button" class="btn-eye" onclick="togglePasswordVisibility(${user.user_id})">
+                            <i class="fas ${eyeIcon}"></i>
+                        </button>
+                    </div>
+                </td>
+                <td style="text-align: center;">
+                    <div class="table-management-actions" style="justify-content: center;">
+                        <button class="btn btn-warning" onclick="openEditModal(${index})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-delete" onclick="deleteUserItem(${index})"><i class="fas fa-trash-alt"></i></button>
+                    </div>
+                </td>
+            </tr>`;
+    });
+    
+    tableHtml += `</tbody></table></div>`;
+    container.innerHTML = tableHtml;
+}
+
+function togglePasswordVisibility(userId) {
+    unmaskedPasswords[userId] = !unmaskedPasswords[userId];
+    renderUsers();
+}
+
+function openAddModal() {
+    document.getElementById('addUserForm').reset();
+    document.getElementById('addUserModal').style.display = 'flex';
+}
+
+function closeModal(id) { 
+    document.getElementById(id).style.display = 'none'; 
+}
+
+function openEditModal(index) {
+    const user = globalUsers[index];
+    document.getElementById('editUserForm').reset();
+    document.getElementById('edit_user_id').value = user.user_id;
+    document.getElementById('edit_username').value = user.username;
+    document.getElementById('edit_email').value = user.email || '';
+    document.getElementById('edit_password').value = ''; 
+    document.getElementById('editUserModal').style.display = 'flex';
+}
+
+async function submitUserForm(event) {
+    event.preventDefault();
+    try {
+        const usernameInput = document.getElementById('username').value;
+        const emailInput = document.getElementById('email').value;
+        const passwordInput = document.getElementById('password').value;
+        
+        const formData = new FormData();
+        formData.append('username', usernameInput);
+        formData.append('email', emailInput);
+        formData.append('password', passwordInput);
+
+        const response = await fetch('/admin/api/add-user', { method: 'POST', body: formData });
+        const result = await parseJsonResponse(response);
+        if (result.success) { 
+            closeModal('addUserModal'); 
+            await loadInitialData(); 
+        } else { 
+            alert(result.message); 
+        }
+    } catch (error) {
+        console.error('Error saving user:', error);
+        alert('An error occurred: ' + error.message);
+    }
+}
+
+async function submitEditForm(event) {
+    event.preventDefault();
+    const userId = document.getElementById('edit_user_id').value;
+    const usernameInput = document.getElementById('edit_username').value;
+    const emailInput = document.getElementById('edit_email').value;
+    const passwordInput = document.getElementById('edit_password').value;
+    
+    const formData = new FormData();
+    formData.append('user_id', userId);
+    formData.append('username', usernameInput);
+    formData.append('email', emailInput);
+    
+    if (passwordInput.trim() !== "") {
+        formData.append('password', passwordInput);
+    }
+
+    try {
+        const response = await fetch('/admin/api/edit-user', { method: 'POST', body: formData });
+        const result = await parseJsonResponse(response);
+        if (result.success) { 
+            closeModal('editUserModal'); 
+            await loadInitialData(); 
+        } else { 
+            alert(result.message); 
+        }
+    } catch (error) {
+        console.error('Error updating user:', error);
+        alert('An error occurred: ' + error.message);
+    }
+}
+
+async function deleteUserItem(index) {
+    if (confirm(`Delete user "${globalUsers[index].username}"?`)) {
+        try {
+            const response = await fetch('/admin/api/delete-user', { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify({ user_id: globalUsers[index].user_id }) 
+            });
+            const result = await parseJsonResponse(response);
+            if (result.success) {
+                await loadInitialData();
+            } else {
+                alert(result.message);
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            alert('An error occurred: ' + error.message);
+        }
+    }
+}
+
+async function parseJsonResponse(response) {
+    const responseText = await response.text();
+
+    if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    try {
+        return JSON.parse(responseText);
+    } catch (error) {
+        console.error('Non-JSON response:', responseText);
+        throw new Error('The server did not return JSON. Please refresh and try again.');
+    }
+}
+
+document.addEventListener('click', function(e) {
+    ['addUserModal', 'editUserModal'].forEach(id => {
+        if (e.target === document.getElementById(id)) closeModal(id);
+    });
+});
+
+function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, s => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[s]));
+}
+
+function initAdminScrollUp() {
+    const button = document.getElementById('adminScrollUp');
+    if (!button) return;
+
+    const toggleButton = () => {
+        button.classList.toggle('is-visible', window.scrollY > 220);
+    };
+
+    button.addEventListener('click', () => {
+        const firstSection = document.querySelector('.container') || document.body;
+        const top = firstSection === document.body
+            ? 0
+            : Math.max(firstSection.getBoundingClientRect().top + window.pageYOffset - 16, 0);
+
+        window.scrollTo({ top, behavior: 'smooth' });
+    });
+
+    toggleButton();
+    window.addEventListener('scroll', toggleButton, { passive: true });
+}
+
+document.addEventListener('DOMContentLoaded', initAdminScrollUp);
+</script>
+</body>
+</html>
