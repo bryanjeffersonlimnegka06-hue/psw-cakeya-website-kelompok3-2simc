@@ -28,7 +28,7 @@ Welcome to the Cakeya Admin Panel! This document serves as your main navigation 
 
 ### 🔐 Default Credentials
 ```
-Email:    admin@cakeya.local
+Username:   Bryan
 Password: admin123
 ⚠️ Change these immediately after first login!
 ```
